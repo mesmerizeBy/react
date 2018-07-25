@@ -1,6 +1,11 @@
-const changeTextAction = {
-        type:'CHANGE_TEXT'
+export const changeTheme = {
+   type:'CHANGE_THEME'
 }
-const buttonClickAction = {
-        type:'BUTTON_CLICK'
+
+export function changePath(path=[""]){
+	return {
+		type:'CHANGE_PATH',
+		path:path
+	}
+		
 }
