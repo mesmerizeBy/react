@@ -33,17 +33,17 @@ class Main extends React.Component {
   }
 
   render() {
-    console.log(this.props)
+    
     return (
       <Layout className="components-layout-demo-custom-trigger" style={{height:'100%'}}>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed} theme={this.props.theme} >
             <Switch checked={this.props.theme === 'dark'} onChange={this.props.onchangeTheme}  checkedChildren="Dark"  unCheckedChildren="Light"/>
             <Menu theme={this.props.theme} onClick={this.handleClick} defaultOpenKeys={['sub1']}  selectedKeys={[this.state.current]} mode="inline">
                 <SubMenu key="sub1" style={{borderBottom:'solid 1px #666'}} title={<span><Avatar src={require('../images/person.jpg')}/>&emsp;<span>&emsp;邹鹏辉</span></span>}>
-                    <Menu.Item key="1" ><Link to="/" onClick={this.props.onchangePath.bind(["MyProfile"])}><Icon type="profile" />我的简历</Link></Menu.Item>
+                    <Menu.Item key="1" ><Link to="/" onClick={this.props.onchangePath.bind(this,["MyProfile"])}><Icon type="profile" />我的简历</Link></Menu.Item>
                 </SubMenu>
                 <Menu.Item key="2">
-                    <Link to="/" onClick={this.props.onchangePath.bind(["Article"])}>
+                    <Link to="/" onClick={this.props.onchangePath.bind(this,["Article"])}>
                         <Icon type="file-text" />
                         <span>文章</span>
                     </Link>
