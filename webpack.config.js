@@ -1,4 +1,4 @@
-/** *
+/** path.join(__dirname, 'src/dist')*
  *  */
 
 'use strict';
@@ -7,7 +7,7 @@ var path = require('path');
 module.exports = {
     entry: './src/app.js' ,
     output: {
-        path: path.join(__dirname, 'src/dist'),
+        path: 'D:\\www\\php\\myProject\\tp5\\public\\static\\js\\',
         publicPath:'/dist/',
         filename: 'bundle.js' },
     module: {

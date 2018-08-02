@@ -1,20 +1,57 @@
+import {combineReducers} from 'redux';
 
-const initialState = {
+const mainState = {
     theme: 'dark',
-    bread: ['myProfile']
+    bread: [],
+    isLogin:false
   };
-export const reducer = (state = initialState, action) => {
+const articleState ={
+    tags:[],
+    types:[]
+}
+const main = (state = mainState, action) => {
     
     switch (action.type) {
         case 'CHANGE_THEME':
             return {...state,
                 theme: state.theme=='dark' ? 'light':'dark'
             }
-        case 'CHANGE_PATH':
-            return {...state,
-                bread: action.path
+        case 'Login':
+            return {
+                ...state,
+                isLogin:true
             }
         default:
-            return initialState;
+            return state;
     }
 }
+const article = (state = articleState,action)=>{
+    
+    switch (action.type) {
+        case 'ADD_TAG':
+            return {...state,
+                tags: state.tags.concat([action.tag])
+            }
+        case 'REMOVE_TAG':
+            return {...state,
+                tags: state.tags.filter(tag => tag !== action.tag)
+            }
+        case 'ADD_TYPE':
+            return {...state,
+                types: state.types.concat([action.types])
+            }
+        case 'REMOVE_TYPE':
+            return {...state,
+                types: state.types.filter(types => types !== action.types)
+            }
+        default:
+            return state;
+    }
+}
+
+var reducer =combineReducers({
+    "mainState": main,
+    "articleState": article
+})
+
+export {reducer};

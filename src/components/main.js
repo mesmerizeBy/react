@@ -2,28 +2,79 @@
 import ReactDOM from 'react-dom';
 import KitCal from './kitCal.js';
 import Article from './article.js';
-import { Layout, Menu, Icon,Switch ,Avatar,Breadcrumb } from 'antd';
+import { Layout, Menu, Icon,Switch ,Avatar,Breadcrumb ,Row, Col} from 'antd';
 import { Route,Link ,Switch as Sroute,Redirect} from 'react-router-dom';
 import QueueAnim from 'rc-queue-anim';
 import {connect } from 'react-redux';
-
+import LoginForm from './login.js';
 import {changeTheme,changePath} from './action/maina.js';
+import {Login} from './action/maina.js';
+import EditorMo from './write.js';
+import request from './util/request.js';
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
 
-
+var link={
+    "":["1","我的简历"],
+    "MyProfile":['1','我的简历'],
+    "Article":['2','我的文章'],
+    "BlockWallet":['3','区块链'],
+    "recommend":['4','推荐'],
+    "collection":['5','收藏柜'],
+    "tool":['6','工具箱'],
+    "aboutBT":["2","区块链技术"],
+    "console":["7","入口"],
+    "write":["7","控制台"]
+  }
 class Main extends React.Component {
   state = {
     collapsed: false,
     current: '1',
+    manage:[
+        <Menu.Item key="7" >
+            <Link to="/console/write" >
+                <Icon type="select" />
+                <span>入口</span>
+            </Link>
+        </Menu.Item>
+    ],
+    top:[
+        <Menu
+        theme="light"
+        mode="horizontal"
+        defaultSelectedKeys={['1']}
+        style={{ lineHeight: '64px' }}
+      >
+        <Menu.Item key="1"><Link to="/console/write" ><Icon type="edit" /><span>写文章</span></Link></Menu.Item>
+        <Menu.Item key="2"><Icon type="eye-o" /><span>掌控</span></Menu.Item>
+        <Menu.Item key="3"><Icon type="loading-3-quarters" /><span>未定</span></Menu.Item>
+      </Menu>
+    ]
+  }
+  constructor(props){
+    super(props);
+    request.post('/login',{}).then((response)=>response.json()).then(function(res){
+        
+        if(res.status==1){
+            props.onLogin();
+        }
+    })
+  }
+  
+  
+  componentDidMount() {
+    var n=this.props.location.pathname.split("/");
+
+    this.setState({current:link[n[1]][0]});
+    
   }
 
   handleClick = (e) => {
-    console.log('click ', e);
     this.setState({
       current: e.key,
     });
+    // console.log(this.props)
   }
 
   toggle = () => {
@@ -40,57 +91,78 @@ class Main extends React.Component {
             <Switch checked={this.props.theme === 'dark'} onChange={this.props.onchangeTheme}  checkedChildren="Dark"  unCheckedChildren="Light"/>
             <Menu theme={this.props.theme} onClick={this.handleClick} defaultOpenKeys={['sub1']}  selectedKeys={[this.state.current]} mode="inline">
                 <SubMenu key="sub1" style={{borderBottom:'solid 1px #666'}} title={<span><Avatar src={require('../images/person.jpg')}/>&emsp;<span>&emsp;邹鹏辉</span></span>}>
-                    <Menu.Item key="1" ><Link to="/" onClick={this.props.onchangePath.bind(this,["MyProfile"])}><Icon type="profile" />我的简历</Link></Menu.Item>
+                    <Menu.Item key="1" ><Link to="/MyProfile" ><Icon type="profile" />我的简历</Link></Menu.Item>
                 </SubMenu>
-                <Menu.Item key="2">
-                    <Link to="/" onClick={this.props.onchangePath.bind(this,["Article"])}>
-                        <Icon type="file-text" />
-                        <span>文章</span>
-                    </Link>
-                </Menu.Item>
+                    <Menu.Item key="2">
+                        <Link to="/Article" >
+                            <Icon type="file-text" />
+                            <span>我的文章</span>
+                        </Link>
+                    </Menu.Item>
                 <Menu.Item key="3">
-                    <Link to="/BlockWallet">
+                    <Link to="/BlockWallet" >
                         <Icon type="api" />
                         <span>区块链</span>
                     </Link>
                 </Menu.Item>
                 <Menu.Item key="4" >
-                    <Link to="/">
+                    <Link to="/recommend">
                         <Icon type="ellipsis" />
                         <span>推荐</span>
                     </Link>
                 </Menu.Item>
                 <Menu.Item key="5" >
-                    <Link to="/collection">
+                    <Link to="/collection" >
                         <Icon type="appstore" />
                         <span>收藏柜</span>
                     </Link>
                 </Menu.Item>
                 <Menu.Item key="6" >
-                    <Link to="/tool">
+                    <Link to="/tool" >
                         <Icon type="tool" />
                         <span>小工具</span>
                     </Link>
                 </Menu.Item>
+                {
+                    this.props.theme=="light"?this.state.manage:null
+                }
             </Menu>
         </Sider>
 
         <Layout>
           <Header style={{ background: '#fff', padding: 0 }}>
-                <div style={{float:'left'}}><Icon className="trigger" type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} onClick={this.toggle} /></div>
-                <div style={{float:'left'}}>
+          <Row>
+                <Col span={2}><Icon className="trigger" type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} onClick={this.toggle} /></Col>
+                <Col span={4}>
+                
                 <Breadcrumb style={{ "line-height": '64px' }}>
-                {
-                    this.props.bread.length>0?this.props.bread.map((item, index)=>{
-                        return  <Breadcrumb.Item>{item}</Breadcrumb.Item>
-                    }):""
-                    
-                }
+                    <QueueAnim className="demo-content" type={['left', 'right']}>
+                        <div key={this.props.location.pathname} style={{position:"absolute",top:"0"}}>
+                            <QueueAnim className="demo-content" type={['left', 'right']}>
+                            {
+                                this.props.location.pathname.split("/").filter(e=> e!=""&&typeof(link[e])!=='undefined').map(e=>link[e][1]).map((item, index)=>{
+                                    return  <Breadcrumb.Item key={item}>{item}</Breadcrumb.Item>
+                                })
+                            }
+                            </QueueAnim >
+                        </div>
+                    </QueueAnim >
                 </Breadcrumb>
-                </div>
+                </Col>
+                <Col span={10}>
+                {
+                    this.props.isLogin?this.state.top:null
+                }
+                </Col>
+            </Row>
           </Header>
-          <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
-            
+          <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280,overflow:'auto' }}>
+                <Sroute>
+                    <Route  path='/Article/:id' component={Article}/>
+                    <Route  path='/console' exact component={LoginForm}/>
+                    <Route  path='/console/write' exact render={(props)=>this.props.isLogin?<EditorMo {...props} />:(<Redirect to={{pathname: '/console'}} />)}/>
+                    <Redirect exact from="/" to={{pathname: '/MyProfile'}} />
+                </Sroute>
           </Content>
         </Layout>
       </Layout>
@@ -101,16 +173,16 @@ class Main extends React.Component {
 //映射Redux state到组件的属性
 function mapStateToProps(state) {
     return {
-    	theme:state.theme,
-        bread:state.bread
+        isLogin:state.mainState.isLogin,
+    	theme:state.mainState.theme
     }
 }
 
 //映射Redux actions到组件的属性
 function mapDispatchToProps(dispatch){
     return{
+        onLogin:()=>dispatch(Login),
         onchangeTheme:()=>dispatch(changeTheme),
-        onchangePath:(path)=>dispatch(changePath(path))
     }
 }
 

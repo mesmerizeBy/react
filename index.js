@@ -15,6 +15,7 @@ app.use(express.static(path.join(__dirname,'src')))
 app.get('/', function (req, res) {
    res.render("index.html");
 })
+console.log(path.join(__dirname, 'src'))
 
 var server = app.listen(3001, function () {
  
