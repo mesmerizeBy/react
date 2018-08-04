@@ -50,10 +50,14 @@ class EditorMo extends React.Component{
 	    var p=this.props;
 	    this.props.form.validateFields((err, values) => {
 	      if (!err) {
-	        values['content']=this.editor.txt.html()
+	        values['content']=this.editor.txt.html();
+	        values['summary']=this.editor.txt.text().substr(0,30);
+	        values['tags[]']=values['tags'];
+	        values['types[]']=values['types'];
+	        console.log(values)
 	        request.post('/publish',values).then((response)=>response.json()).then(function(res){
 	        	console.log(res);
-	        	// p.history.push("/Article/"+res['id']);
+	        	p.history.push("/Article/"+res['id']);
 		      	
 		    }).catch(console.log);
 	      }
@@ -133,8 +137,8 @@ class EditorMo extends React.Component{
 		          {...formItemLayout}
 		          label="文章类型"
 		        >
-		          {getFieldDecorator('isPublic', { valuePropName: 'checked', initialValue: false})(
-		            <Switch defaultChecked checkedChildren="私密"  unCheckedChildren="公开"/>
+		          {getFieldDecorator('isPublic', { valuePropName: 'checked', initialValue: true})(
+		            <Switch defaultChecked checkedChildren="公开"  unCheckedChildren="私密"/>
 		          )}
 		        </FormItem>
 		        <FormItem wrapperCol={{ span: 14 ,offset:3}}>
@@ -149,16 +153,9 @@ class EditorMo extends React.Component{
 }
 EditorMo = Form.create({
   mapPropsToFields(props) {
-
 		return {
-		  tags: Form.createFormField({
-		    ...props.tags,
-		    value: props.tags,
-		  }),
-		  types: Form.createFormField({
-		    ...props.types,
-		    value: props.types,
-		  })
+		  "tags": Form.createFormField({value:props.tags}),
+		  "types": Form.createFormField({value:props.types})
 		};
 	}
 })(EditorMo);

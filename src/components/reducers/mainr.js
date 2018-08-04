@@ -7,7 +7,8 @@ const mainState = {
   };
 const articleState ={
     tags:[],
-    types:[]
+    types:[],
+    count:{}
 }
 const main = (state = mainState, action) => {
     
@@ -43,6 +44,10 @@ const article = (state = articleState,action)=>{
         case 'REMOVE_TYPE':
             return {...state,
                 types: state.types.filter(types => types !== action.types)
+            }
+        case 'SET_COUNT':
+            return {...state,
+                count: action.count
             }
         default:
             return state;

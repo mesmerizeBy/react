@@ -16,9 +16,9 @@ const { SubMenu } = Menu;
 
 
 var link={
-    "":["1","我的简历"],
-    "MyProfile":['1','我的简历'],
-    "Article":['2','我的文章'],
+    "":["1","我"],
+    "MyProfile":['1','我'],
+    "Article":['2','文章'],
     "BlockWallet":['3','区块链'],
     "recommend":['4','推荐'],
     "collection":['5','收藏柜'],
@@ -64,9 +64,12 @@ class Main extends React.Component {
   
   
   componentDidMount() {
+    
     var n=this.props.location.pathname.split("/");
-
+    if(typeof(link[n[1]])!=='undefined')
     this.setState({current:link[n[1]][0]});
+  }
+  componentWillReceiveProps(props){
     
   }
 
@@ -91,12 +94,12 @@ class Main extends React.Component {
             <Switch checked={this.props.theme === 'dark'} onChange={this.props.onchangeTheme}  checkedChildren="Dark"  unCheckedChildren="Light"/>
             <Menu theme={this.props.theme} onClick={this.handleClick} defaultOpenKeys={['sub1']}  selectedKeys={[this.state.current]} mode="inline">
                 <SubMenu key="sub1" style={{borderBottom:'solid 1px #666'}} title={<span><Avatar src={require('../images/person.jpg')}/>&emsp;<span>&emsp;邹鹏辉</span></span>}>
-                    <Menu.Item key="1" ><Link to="/MyProfile" ><Icon type="profile" />我的简历</Link></Menu.Item>
+                    <Menu.Item key="1" ><Link to="/MyProfile" ><Icon type="profile" />我</Link></Menu.Item>
                 </SubMenu>
                     <Menu.Item key="2">
                         <Link to="/Article" >
                             <Icon type="file-text" />
-                            <span>我的文章</span>
+                            <span>文章</span>
                         </Link>
                     </Menu.Item>
                 <Menu.Item key="3">
@@ -132,7 +135,7 @@ class Main extends React.Component {
         <Layout>
           <Header style={{ background: '#fff', padding: 0 }}>
           <Row>
-                <Col span={2}><Icon className="trigger" type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} onClick={this.toggle} /></Col>
+                <Col span={1}><Icon className="trigger" type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} onClick={this.toggle} /></Col>
                 <Col span={4}>
                 
                 <Breadcrumb style={{ "line-height": '64px' }}>
@@ -158,10 +161,10 @@ class Main extends React.Component {
           </Header>
           <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280,overflow:'auto' }}>
                 <Sroute>
-                    <Route  path='/Article/:id' component={Article}/>
+                    <Route  path='/Article' component={Article}/>
                     <Route  path='/console' exact component={LoginForm}/>
                     <Route  path='/console/write' exact render={(props)=>this.props.isLogin?<EditorMo {...props} />:(<Redirect to={{pathname: '/console'}} />)}/>
-                    <Redirect exact from="/" to={{pathname: '/MyProfile'}} />
+                    <Redirect  to={{pathname: '/MyProfile'}} />
                 </Sroute>
           </Content>
         </Layout>

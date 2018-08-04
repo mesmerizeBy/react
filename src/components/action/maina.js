@@ -32,4 +32,9 @@ export function removeType(t) {
 		types:t
 	}
 }
-
+export function setCount(t) {
+	return {
+		type:'SET_COUNT',
+		count:t
+	}
+}
